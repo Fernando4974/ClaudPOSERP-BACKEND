@@ -4,11 +4,12 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
   Max,
   MaxLength,
+  Min,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -35,9 +36,10 @@ export class CreateProductDto {
   @IsString({ each: true })
   @IsArray()
   tags?: string[];
-  @IsNumber()
-  @IsPositive()
   @IsOptional()
+  @ValidateIf((object, value) => value !== '' && value !== null)
+  @IsNumber()
+  @Min(1)
   @Max(25)
   numberKey?: number;
   @IsBoolean()
