@@ -3,6 +3,7 @@ import {
   HttpCode,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,6 +20,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginResponse } from './interfaces/login-response.interfaces';
 import { isUUID } from 'class-validator';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -144,23 +146,65 @@ export class AuthService {
 
   async findOne(term: string) {
     let user: User | null = null;
+
     if (isUUID(term)) {
-      user = await this.userRepository.findOneBy({ id: term });
+      // findOne permite usar 'select' para filtrar campos
+      user = await this.userRepository.findOne({
+        where: { id: term },
+        select: [
+          'id',
+          'email',
+          'name',
+          'lastname',
+          'isActive',
+          'roles',
+          'membershipStart',
+          'membershipEnd',
+        ], // No incluyas 'password'
+      });
     } else {
       const queryBuilder = this.userRepository.createQueryBuilder('user');
       user = await queryBuilder
+        .select([
+          'user.id',
+          'user.email',
+          'user.name',
+          'user.lastname',
+          'user.isActive',
+          'user.roles',
+          'user.membershipStart',
+          'user.membershipEnd',
+        ])
         .where('user.email = :email or LOWER(user.name) = :name', {
-          email: term,
+          email: term.toLowerCase(),
           name: term.toLowerCase(),
         })
         .getOne();
-
-      return user;
     }
+
+    if (!user) throw new NotFoundException(`Usuario no encontrado`);
+    console.log(user);
+    return user;
   }
 
-  update(id: number, updateAuthDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
+  async update(user: User, updateAuthDto: UpdateUserDto) {
+    const userExist = await this.userRepository.findOneBy({ id: user.id });
+    if (!userExist) {
+      return 'User not found';
+    }
+    const userToUpdate = await this.userRepository.preload({
+      id: userExist.id,
+      ...updateAuthDto,
+    });
+    if (!userToUpdate) {
+      return new NotFoundException('User not found');
+    }
+    try {
+      await this.userRepository.save(userToUpdate);
+      return userToUpdate;
+    } catch (error) {
+      return this.handleDBErrors(error);
+    }
   }
 
   remove(id: number) {

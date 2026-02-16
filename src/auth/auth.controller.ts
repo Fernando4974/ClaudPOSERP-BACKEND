@@ -14,6 +14,10 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { ForgotPasswordDto } from './dto/forgot.password.dto';
 import { LoginResponse } from './interfaces/login-response.interfaces';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/user.entity';
+import { Auth } from './decorators/auth.decorator';
+import { validRoles } from './interfaces/valid-roles';
 
 @Controller('auth')
 export class AuthController {
@@ -31,26 +35,30 @@ export class AuthController {
   recoverPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.sendRecoveryEmail(forgotPasswordDto);
   }
+
   @Patch('password-reset')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+  @Auth(validRoles.user, validRoles.admin)
+  @Patch('update-user')
+  update(@GetUser() user: User, @Body() updateAuthDto: UpdateUserDto) {
+    return this.authService.update(user, updateAuthDto);
   }
 
   @Get()
   findAll() {
     return this.authService.findAll();
   }
-
+  @Auth(validRoles.user, validRoles.admin)
+  @Get('user-update')
+  getUserToUpdate(@GetUser() user: User) {
+    return this.authService.findOne(user.id);
+  }
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.authService.findOne(term);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateUserDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
