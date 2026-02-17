@@ -20,7 +20,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginResponse } from './interfaces/login-response.interfaces';
 import { isUUID } from 'class-validator';
-import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +63,7 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException({
+        passwordBd: user.password,
         error: 'SERVER: Invalid password',
         message: passwordRegular,
       });
@@ -132,6 +132,7 @@ export class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     try {
       await this.userRepository.save(user);
+      console.log(user.password);
       return { message: 'Password reset successfully' };
     } catch (error) {
       throw new InternalServerErrorException({
@@ -192,6 +193,11 @@ export class AuthService {
     if (!userExist) {
       return 'User not found';
     }
+
+    if (updateAuthDto.password) {
+      updateAuthDto.password = await bcrypt.hash(updateAuthDto.password, 10);
+    }
+
     const userToUpdate = await this.userRepository.preload({
       id: userExist.id,
       ...updateAuthDto,

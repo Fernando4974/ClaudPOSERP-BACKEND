@@ -29,8 +29,11 @@ export class SalesService {
     }
   }
 
-  findAll() {
-    return `This action returns all sales`;
+  findAll(user: User) {
+    const sales = this.saleRepository.find({
+      where: { user: { id: user.id } },
+    });
+    return sales;
   }
 
   findOne(id: number) {

@@ -18,15 +18,16 @@ import { User } from 'src/auth/entities/user.entity';
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
-  @Auth(validRoles.user)
+  @Auth(validRoles.user, validRoles.admin)
   @Post('create')
   create(@GetUser() user: User, @Body() createSaleDto: CreateSaleDto) {
     return this.salesService.create(user, createSaleDto);
   }
 
-  @Get()
-  findAll() {
-    return this.salesService.findAll();
+  @Auth(validRoles.admin, validRoles.user)
+  @Get('get-all')
+  findAll(@GetUser() user: User) {
+    return this.salesService.findAll(user);
   }
 
   @Get(':id')

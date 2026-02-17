@@ -1,6 +1,5 @@
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   OneToMany,
@@ -34,10 +33,10 @@ export class User {
   isActive: boolean;
 
   // --- NUEVAS COLUMNAS DE MEMBRESÍA ---
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', name: 'membershipStart', nullable: true })
   membershipStart: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', name: 'membershipEnd', nullable: true })
   membershipEnd: Date;
   // ------------------------------------
 
@@ -56,10 +55,10 @@ export class User {
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }
-  @BeforeUpdate()
-  async hashPasswordToUpdate() {
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, 10);
-    }
-  }
+  // @BeforeUpdate()
+  // async hashPasswordToUpdate() {
+  //   if (this.password) {
+  //     this.password = await bcrypt.hash(this.password, 10);
+  //   }
+  // }
 }
