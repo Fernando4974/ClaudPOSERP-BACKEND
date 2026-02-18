@@ -4,9 +4,11 @@ import { Sale } from './sale.entity';
 
 @Entity('sale_items')
 export class SaleItem {
-  @PrimaryGeneratedColumn('uuid')
-  @IsUUID()
+  @PrimaryGeneratedColumn('increment')
   id: string;
+
+  @Column({ nullable: true })
+  title?: string;
 
   @Column()
   @IsUUID()

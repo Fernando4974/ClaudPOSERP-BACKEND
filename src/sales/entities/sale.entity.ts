@@ -1,5 +1,4 @@
 import {
-  IsUUID,
   IsNumber,
   IsPositive,
   IsDate,
@@ -20,14 +19,18 @@ import { Type } from 'class-transformer';
 
 @Entity('sales') // Es buena práctica nombrar la tabla en plural
 export class Sale {
-  @PrimaryGeneratedColumn('uuid')
-  @IsUUID()
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   @IsNumber()
   @IsPositive()
   total: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @IsNumber()
+  @IsPositive()
+  iva: number;
 
   @Column({ type: 'varchar', length: 50, default: 'pending' })
   status: string; // Ej: 'pending', 'completed', 'cancelled'

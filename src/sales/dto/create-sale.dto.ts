@@ -15,6 +15,10 @@ export class CreateSaleDto {
   @IsPositive()
   total: number;
 
+  @IsNumber()
+  @IsPositive()
+  iva: number;
+
   @IsString()
   @IsOptional()
   status?: string;

@@ -32,7 +32,7 @@ export class SalesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.salesService.findOne(+id);
+    return this.salesService.findOne(id);
   }
 
   @Patch(':id')
@@ -42,6 +42,6 @@ export class SalesController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.salesService.remove(+id);
+    return this.salesService.remove(id);
   }
 }
