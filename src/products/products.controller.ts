@@ -24,7 +24,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
-  @Auth(validRoles.admin)
+  @Auth(validRoles.admin, validRoles.superUser)
   @Post('create')
   @UseInterceptors(FileInterceptor('file'))
   create(
@@ -48,7 +48,7 @@ export class ProductsController {
 
     return this.productsService.findNumberKey(numericValue);
   }
-  @Auth(validRoles.admin)
+  @Auth(validRoles.admin, validRoles.superUser)
   @Patch('update/:id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -66,7 +66,7 @@ export class ProductsController {
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
   }
-  @Auth(validRoles.admin)
+  @Auth(validRoles.admin, validRoles.superUser)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);

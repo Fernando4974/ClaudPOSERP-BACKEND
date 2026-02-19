@@ -18,13 +18,13 @@ import { User } from 'src/auth/entities/user.entity';
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
-  @Auth(validRoles.user, validRoles.admin)
+  @Auth(validRoles.user, validRoles.admin, validRoles.superUser)
   @Post('create')
   create(@GetUser() user: User, @Body() createSaleDto: CreateSaleDto) {
     return this.salesService.create(user, createSaleDto);
   }
 
-  @Auth(validRoles.admin, validRoles.user)
+  @Auth(validRoles.admin, validRoles.user, validRoles.superUser)
   @Get('get-all')
   findAll(@GetUser() user: User) {
     return this.salesService.findAll(user);
@@ -40,8 +40,9 @@ export class SalesController {
     return this.salesService.update(+id, updateSaleDto);
   }
 
+  @Auth(validRoles.admin, validRoles.superUser)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@GetUser() user: User, @Param('id') id: string) {
     return this.salesService.remove(id);
   }
 }

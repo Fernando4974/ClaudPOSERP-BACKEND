@@ -43,7 +43,7 @@ export class AuthController {
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
-  @Auth(validRoles.admin)
+  @Auth(validRoles.admin, validRoles.superUser)
   @Patch('update-user')
   update(@GetUser() user: User, @Body() updateAuthDto: UpdateUserDto) {
     return this.authService.update(user, updateAuthDto);
@@ -53,7 +53,7 @@ export class AuthController {
   findAll() {
     return this.authService.findAll();
   }
-  @Auth(validRoles.user, validRoles.admin)
+  @Auth(validRoles.superUser, validRoles.admin)
   @Get('user-update')
   getUserToUpdate(@GetUser() user: User) {
     return this.authService.findOne(user.id);
