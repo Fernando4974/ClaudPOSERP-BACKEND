@@ -33,10 +33,10 @@ export class User {
   isActive: boolean;
 
   // --- NUEVAS COLUMNAS DE MEMBRESÍA ---
-  @Column({ type: 'timestamp', name: 'membershipStart', nullable: true })
+  @Column({ type: 'timestamp', name: 'membership_start', nullable: true })
   membershipStart: Date;
 
-  @Column({ type: 'timestamp', name: 'membershipEnd', nullable: true })
+  @Column({ type: 'timestamp', name: 'membership_end', nullable: true })
   membershipEnd: Date;
   // ------------------------------------
 

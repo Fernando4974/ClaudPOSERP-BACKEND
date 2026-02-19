@@ -71,6 +71,7 @@ export class AuthService {
     return {
       message: `User ${user.name} logged in successfully`,
       token: this.generateJwtToken({ id: user.id }),
+      userRoles: user.roles,
     };
   }
   // Send recovery email

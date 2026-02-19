@@ -5,4 +5,6 @@ export class LoginUserDto {
   email: string;
   @IsString()
   password: string;
+  @IsString()
+  recaptchaToken: string;
 }

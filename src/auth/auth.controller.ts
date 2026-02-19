@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +19,7 @@ import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/user.entity';
 import { Auth } from './decorators/auth.decorator';
 import { validRoles } from './interfaces/valid-roles';
+import { RecaptchaGuard } from './guards/recaptcha.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +30,7 @@ export class AuthController {
     return this.authService.create(createUserDto);
   }
   @Post('login')
+  @UseGuards(RecaptchaGuard)
   loginUser(@Body() loginUserDto: LoginUserDto): Promise<LoginResponse> {
     return this.authService.loginUser(loginUserDto);
   }
@@ -40,7 +43,7 @@ export class AuthController {
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
-  @Auth(validRoles.user, validRoles.admin)
+  @Auth(validRoles.admin)
   @Patch('update-user')
   update(@GetUser() user: User, @Body() updateAuthDto: UpdateUserDto) {
     return this.authService.update(user, updateAuthDto);
