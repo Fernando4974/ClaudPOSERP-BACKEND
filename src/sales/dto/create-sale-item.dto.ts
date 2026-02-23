@@ -1,11 +1,4 @@
-import {
-  IsUUID,
-  IsNumber,
-  IsPositive,
-  IsInt,
-  Min,
-  IsString,
-} from 'class-validator';
+import { IsUUID, IsNumber, IsInt, Min, IsString } from 'class-validator';
 
 export class CreateSaleItemDto {
   @IsUUID()
@@ -19,6 +12,5 @@ export class CreateSaleItemDto {
   quantity: number;
 
   @IsNumber()
-  @IsPositive()
   priceAtSale: number;
 }
