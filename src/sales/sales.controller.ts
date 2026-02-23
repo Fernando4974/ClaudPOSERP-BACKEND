@@ -14,12 +14,21 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 import { validRoles } from 'src/auth/interfaces/valid-roles';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { ApiResponse } from '@nestjs/swagger';
+import { Sale } from './entities/sale.entity';
 
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
   // 1. RUTAS ESTÁTICAS PRIMERO
+
+  @ApiResponse({ status: 201, description: 'Sale was created', type: Sale })
+  @ApiResponse({ status: 400, description: 'BadRequest' })
+  @ApiResponse({
+    status: 401,
+    description: 'Forbidden Unauthorized by the token',
+  })
   @Auth(validRoles.user, validRoles.admin, validRoles.superUser)
   @Post('create')
   create(@GetUser() user: User, @Body() createSaleDto: CreateSaleDto) {

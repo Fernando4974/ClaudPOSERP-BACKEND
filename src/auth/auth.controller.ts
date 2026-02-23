@@ -20,7 +20,9 @@ import { User } from './entities/user.entity';
 import { Auth } from './decorators/auth.decorator';
 import { validRoles } from './interfaces/valid-roles';
 import { RecaptchaGuard } from './guards/recaptcha.guard';
+import { ApiResponse } from '@nestjs/swagger';
 
+@ApiResponse({ status: 201, description: 'User Created', type: User })
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

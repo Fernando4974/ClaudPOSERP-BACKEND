@@ -8,9 +8,14 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Product } from 'src/products/entities/product.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class User {
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJiYzBlNDI5LTVjNTctNDhhOC04ZTAwLTUyMGU2OTljM2ZiOSIsImlhdCI6MTc3MDE2MTc0OCwiZXhwIjoxNzcwMTY1MzQ4fQ.6bJUlg-EVy-U-WGebxXQvGM-LIsYyIC6nG5jbC4dLEw',
+  })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
