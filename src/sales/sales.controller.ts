@@ -18,6 +18,8 @@ import { User } from 'src/auth/entities/user.entity';
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
+
+  // 1. RUTAS ESTÁTICAS PRIMERO
   @Auth(validRoles.user, validRoles.admin, validRoles.superUser)
   @Post('create')
   create(@GetUser() user: User, @Body() createSaleDto: CreateSaleDto) {
@@ -30,6 +32,7 @@ export class SalesController {
     return this.salesService.findAll(user);
   }
 
+  // 2. RUTAS DINÁMICAS AL FINAL
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.salesService.findOne(id);

@@ -39,18 +39,33 @@ export class SalesService {
     });
     return sales;
   }
-
   async findOne(id: string) {
+    // Validación preventiva: Si el ID es "create", algo salió mal en el ruteo
+    if (id === 'create') {
+      throw new BadRequestException('ID de venta inválido');
+    }
+
     const sale = await this.saleRepository.findOne({
-      where: { id },
+      where: { id: id as any }, // 'as any' para compatibilidad según tu entidad (UUID o Int)
       relations: ['items', 'user'],
     });
-    if (sale) {
-      return sale;
-    } else {
-      return this.handleDBErrors('Sale not found');
-    }
+
+    if (!sale) throw new NotFoundException('Sale not found');
+
+    return sale;
   }
+
+  // async findOne(id: string) {
+  //   const sale = await this.saleRepository.findOne({
+  //     where: { id },
+  //     relations: ['items', 'user'],
+  //   });
+  //   if (sale) {
+  //     return sale;
+  //   } else {
+  //     return this.handleDBErrors('Sale not found');
+  //   }
+  // }
 
   update(id: number, updateSaleDto: UpdateSaleDto) {
     return `This action updates a #${id} sale`;

@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsNumber,
-  IsPositive,
   IsOptional,
   IsString,
   ValidateNested,
@@ -12,11 +11,9 @@ import { CreateSaleItemDto } from './create-sale-item.dto';
 
 export class CreateSaleDto {
   @IsNumber()
-  @IsPositive()
   total: number;
 
   @IsNumber()
-  @IsPositive()
   iva: number;
 
   @IsString()

@@ -40,7 +40,7 @@ import { HttpModule } from '@nestjs/axios';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     AuthModule,
     CommonModule,
