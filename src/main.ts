@@ -29,6 +29,7 @@ async function bootstrap() {
     .setTitle('ClaudPOSERP REST FULL API')
     .setDescription('Endpoints description to ClaudPOSERP')
     .setVersion('0.1')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -39,7 +39,7 @@ import { HttpModule } from '@nestjs/axios';
       port: +process.env.DB_PORT! || 6432,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      autoLoadEntities: false,
+      autoLoadEntities: true,
       synchronize: false,
     }),
     AuthModule,
