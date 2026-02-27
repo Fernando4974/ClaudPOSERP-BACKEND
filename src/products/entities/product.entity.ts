@@ -77,6 +77,7 @@ export class Product {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '') // Quita acentos
-      .replace(/_{2,}/g, '_'); // Evita dobles guiones bajos
+      .replace(/_{2,}/g, '_') // Evita dobles guiones bajos
+      .replace(/' '/, '_');
   }
 }

@@ -60,7 +60,6 @@ export class ProductsService {
 
   async findAll() {
     const products = await this.productsRepository.find({});
-    console.log(products);
     return products;
   }
 
@@ -127,7 +126,6 @@ export class ProductsService {
       throw new NotFoundException();
     }
   }
-  // En el Service
   async findNumberKey(numberKey: number) {
     const valideNumberKey = await this.productsRepository.findOneBy({
       numberKey,
@@ -139,7 +137,6 @@ export class ProductsService {
     }
   }
   private handleDBErrors(error: any): never {
-    // Implement your database error handling logic here
     if (error.code === '23505') {
       console.log(error);
       throw new ConflictException('Product is already exist');

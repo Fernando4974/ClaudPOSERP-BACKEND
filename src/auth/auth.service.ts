@@ -10,7 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ArrayContains, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interfaces';
 import { JwtService } from '@nestjs/jwt';
@@ -74,6 +74,24 @@ export class AuthService {
       userRoles: user.roles,
     };
   }
+  //valide admin password
+  async validateAdminPassword(password: string): Promise<boolean> {
+    const admins = await this.userRepository.find({
+      where: { roles: ArrayContains(['admin']) },
+      select: ['password'],
+    });
+
+    for (const admin of admins) {
+      const isMatch = await bcrypt.compare(password, admin.password);
+
+      if (isMatch) {
+        return true;
+        //return admin; // to view the admin data if needed
+      }
+    }
+    return false;
+  }
+
   // Send recovery email
   @HttpCode(201)
   async sendRecoveryEmail(forgotPasswordDto: ForgotPasswordDto) {

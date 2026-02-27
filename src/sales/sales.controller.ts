@@ -72,7 +72,12 @@ export class SalesController {
   findAll(@GetUser() user: User) {
     return this.salesService.findAll(user);
   }
-
+  // OBTENER VENTAS DEL DIA ------------------------------------------------->>>
+  @Auth(validRoles.admin, validRoles.user, validRoles.superUser)
+  @Get('sales-day')
+  salesDay(@GetUser() user: User) {
+    return this.salesService.salesDay(user);
+  }
   // 2. RUTAS DINÁMICAS AL FINAL
   // OBTENER UNA SOLA VENTA POR ID ------------------------------------------------->>>
   @ApiResponse({

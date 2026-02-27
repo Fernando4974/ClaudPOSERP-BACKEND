@@ -9,8 +9,7 @@
     <p align="center">
 
 ## API DOCUMENTATION
-
-http://localhost:3001/api
+http://localhost:3001/api#/
 
 
 ## docker-compose

@@ -10,7 +10,7 @@ import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
@@ -66,6 +66,7 @@ export class SalesService {
   //     return this.handleDBErrors('Sale not found');
   //   }
   // }
+  //Validar admin password
 
   update(id: number, updateSaleDto: UpdateSaleDto) {
     return `This action updates a #${id} sale`;
@@ -148,5 +149,22 @@ export class SalesService {
     throw new InternalServerErrorException(
       `Unexpected database error: ${error.message || 'Check logs'}`,
     );
+  }
+  async salesDay(user: User) {
+    try {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+      const salesToday: Sale[] = await this.saleRepository.find({
+        where: {
+          createdAt: Between(startOfDay, endOfDay),
+          user: user,
+        },
+      });
+      return salesToday;
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 }

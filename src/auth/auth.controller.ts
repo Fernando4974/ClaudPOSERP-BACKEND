@@ -65,6 +65,23 @@ export class AuthController {
   loginUser(@Body() loginUserDto: LoginUserDto): Promise<LoginResponse> {
     return this.authService.loginUser(loginUserDto);
   }
+  @Post('validate-admin-password')
+  @ApiOperation({
+    summary: 'Validar contraseña de administrador',
+    description:
+      'Verifica si la contraseña proporcionada es correcta para un admin',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Contraseña válida',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Contraseña inválida',
+  })
+  validateAdminPassword(@Body('password') password: string) {
+    return this.authService.validateAdminPassword(password);
+  }
 
   @Post('password-recovery')
   @ApiOperation({

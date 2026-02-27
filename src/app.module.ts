@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ProductsModule } from './products/products.module';
-import { MessagesWsModule } from './messages-ws/messages-ws.module';
 import { SalesModule } from './sales/sales.module';
 import { SeedModule } from './seed/seed.module';
 import { HttpModule } from '@nestjs/axios';
@@ -45,7 +44,6 @@ import { HttpModule } from '@nestjs/axios';
     AuthModule,
     CommonModule,
     ProductsModule,
-    MessagesWsModule,
     SalesModule,
     SeedModule,
   ],

@@ -12,4 +12,5 @@ export interface SeedProduct {
   posAvalible: boolean;
   tags: string[];
   images: string[]; // Simplificado para el seed
+  numberKey: number;
 }

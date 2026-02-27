@@ -1,39 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { SEED_DATA } from './data/seed-data';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
+import { Product } from 'src/products/entities/product.entity';
+import { SEED_DATA } from './data/seed-data';
 
 @Injectable()
 export class SeedService {
   constructor(
     @InjectRepository(Product)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
   ) {}
+
   async executeSeed() {
-    // IDs extraídos de tus tokens
-    const userIds = [
-      '06276ef1-2081-424b-a470-e3df88021b6a',
-      'c75a1324-b26d-4a65-975e-6c5c389e8aca',
-    ];
+    try {
+      // 1. Limpiar base de datos
+      await this.deleteTables();
 
-    const productsToInsert = SEED_DATA.map((seedProduct, index) => {
-      // Repartimos los productos entre los 2 usuarios
-      const userId = userIds[index % 2 === 0 ? 0 : 1];
+      // 2. Crear las instancias de productos
+      const products = SEED_DATA.map((data) => {
+        const { images, user, ...productDetails } = data;
 
-      // Creamos la instancia del producto
-      const product = this.productRepository.create({
-        ...seedProduct,
-        user: { id: userId }, // Relación ManyToOne
-        images: seedProduct.images.map((url) => ({ url })), // Relación OneToMany
+        return this.productRepository.create({
+          ...productDetails,
+          images: images.map((url) => ({ url })), // Transforma strings a objetos ProductImage
+          user: { id: user } as any, // Asigna el ID del usuario
+        });
       });
 
-      return product;
-    });
+      // 3. Guardar todo el arreglo de una vez
+      await this.productRepository.save(products);
 
-    // Limpieza y carga (Cuidado en producción)
-    await this.productRepository.save(productsToInsert);
+      return `Seed ejecutado con éxito: ${products.length} productos creados.`;
+    } catch (error) {
+      console.error('ERROR SEED:', error);
+      throw new InternalServerErrorException(
+        'Error al insertar el seed. Mira la terminal.',
+      );
+    }
+  }
 
-    return 'Seed ejecutado con éxito: 30 productos creados.';
+  private async deleteTables() {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    try {
+      // Borra todos los productos (las imágenes se borran por Cascada si está configurado)
+      await queryBuilder.delete().where({}).execute();
+    } catch (error) {
+      console.log('Error al limpiar:', error.message);
+    }
   }
 }
