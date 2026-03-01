@@ -8,8 +8,8 @@ import {
 import * as bcrypt from 'bcrypt';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Product } from 'src/products/entities/product.entity';
-import { Sale } from 'src/sales/entities/sale.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Sale } from '../../sales/entities/sale.entity';
 
 @Entity({ name: 'users' })
 export class User {
