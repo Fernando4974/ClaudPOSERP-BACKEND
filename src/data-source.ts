@@ -1,12 +1,13 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { resolve } from 'path';
 import { User } from './auth/entities/user.entity';
 import { ProductImage } from './products/entities/product-images.entity';
 import { Product } from './products/entities/product.entity';
 import { Sale } from './sales/entities/sale.entity';
 import { SaleItem } from './sales/entities/sale-item.entity';
 
-dotenv.config();
+dotenv.config({ path: resolve(__dirname, '../.env') });
 
 export const AppDataSource = new DataSource({
   ssl: process.env.STAGE === 'prod',

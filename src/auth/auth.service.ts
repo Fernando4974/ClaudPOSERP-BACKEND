@@ -52,6 +52,13 @@ export class AuthService {
   async loginUser(loginUserDto: LoginUserDto): Promise<LoginResponse> {
     const user = await this.userRepository.findOne({
       where: { email: loginUserDto.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        roles: true,
+      },
     });
     if (!user) {
       throw new UnauthorizedException({ error: 'User not found' });

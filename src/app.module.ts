@@ -40,6 +40,7 @@
 //       password: process.env.DB_PASSWORD,
 //       autoLoadEntities: true,
 //       synchronize: false,
+//       migrationsRun: true,
 //     }),
 //     AuthModule,
 //     CommonModule,
@@ -56,6 +57,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HttpModule } from '@nestjs/axios';
+import { resolve } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -73,6 +75,7 @@ import { AppDataSource } from './data-source';
     // 1. Variables de entorno
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: resolve(__dirname, '../.env'),
     }),
 
     HttpModule,
@@ -97,7 +100,8 @@ import { AppDataSource } from './data-source';
     TypeOrmModule.forRoot({
       ...AppDataSource.options,
       autoLoadEntities: true, // Mantenlo para que Nest gestione las entidades en memoria
-      synchronize: false, // OBLIGATORIO: Ya no queremos que Nest cree tablas automáticamente
+      synchronize: false,
+      migrationsRun: true, // OBLIGATORIO: Ya no queremos que Nest cree tablas automáticamente
     }),
 
     // 4. Tus Módulos
@@ -111,3 +115,8 @@ import { AppDataSource } from './data-source';
   providers: [AppService],
 })
 export class AppModule {}
+
+
+
+
+
