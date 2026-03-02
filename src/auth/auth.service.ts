@@ -3,13 +3,14 @@ import {
   HttpCode,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ArrayContains, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interfaces';
 import { JwtService } from '@nestjs/jwt';
@@ -51,6 +52,13 @@ export class AuthService {
   async loginUser(loginUserDto: LoginUserDto): Promise<LoginResponse> {
     const user = await this.userRepository.findOne({
       where: { email: loginUserDto.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        roles: true,
+      },
     });
     if (!user) {
       throw new UnauthorizedException({ error: 'User not found' });
@@ -62,6 +70,7 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException({
+        passwordBd: user.password,
         error: 'SERVER: Invalid password',
         message: passwordRegular,
       });
@@ -69,8 +78,27 @@ export class AuthService {
     return {
       message: `User ${user.name} logged in successfully`,
       token: this.generateJwtToken({ id: user.id }),
+      userRoles: user.roles,
     };
   }
+  //valide admin password
+  async validateAdminPassword(password: string): Promise<boolean> {
+    const admins = await this.userRepository.find({
+      where: { roles: ArrayContains(['admin']) },
+      select: ['password'],
+    });
+
+    for (const admin of admins) {
+      const isMatch = await bcrypt.compare(password, admin.password);
+
+      if (isMatch) {
+        return true;
+        //return admin; // to view the admin data if needed
+      }
+    }
+    return false;
+  }
+
   // Send recovery email
   @HttpCode(201)
   async sendRecoveryEmail(forgotPasswordDto: ForgotPasswordDto) {
@@ -130,6 +158,7 @@ export class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     try {
       await this.userRepository.save(user);
+      console.log(user.password);
       return { message: 'Password reset successfully' };
     } catch (error) {
       throw new InternalServerErrorException({
@@ -144,23 +173,70 @@ export class AuthService {
 
   async findOne(term: string) {
     let user: User | null = null;
+
     if (isUUID(term)) {
-      user = await this.userRepository.findOneBy({ id: term });
+      // findOne permite usar 'select' para filtrar campos
+      user = await this.userRepository.findOne({
+        where: { id: term },
+        select: [
+          'id',
+          'email',
+          'name',
+          'lastname',
+          'isActive',
+          'roles',
+          'membershipStart',
+          'membershipEnd',
+        ], // No incluyas 'password'
+      });
     } else {
       const queryBuilder = this.userRepository.createQueryBuilder('user');
       user = await queryBuilder
+        .select([
+          'user.id',
+          'user.email',
+          'user.name',
+          'user.lastname',
+          'user.isActive',
+          'user.roles',
+          'user.membershipStart',
+          'user.membershipEnd',
+        ])
         .where('user.email = :email or LOWER(user.name) = :name', {
-          email: term,
+          email: term.toLowerCase(),
           name: term.toLowerCase(),
         })
         .getOne();
-
-      return user;
     }
+
+    if (!user) throw new NotFoundException(`Usuario no encontrado`);
+    console.log(user);
+    return user;
   }
 
-  update(id: number, updateAuthDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
+  async update(user: User, updateAuthDto: UpdateUserDto) {
+    const userExist = await this.userRepository.findOneBy({ id: user.id });
+    if (!userExist) {
+      return 'User not found';
+    }
+
+    if (updateAuthDto.password) {
+      updateAuthDto.password = await bcrypt.hash(updateAuthDto.password, 10);
+    }
+
+    const userToUpdate = await this.userRepository.preload({
+      id: userExist.id,
+      ...updateAuthDto,
+    });
+    if (!userToUpdate) {
+      return new NotFoundException('User not found');
+    }
+    try {
+      await this.userRepository.save(userToUpdate);
+      return userToUpdate;
+    } catch (error) {
+      return this.handleDBErrors(error);
+    }
   }
 
   remove(id: number) {
