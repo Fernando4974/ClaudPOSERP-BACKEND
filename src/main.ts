@@ -19,12 +19,11 @@ async function bootstrap() {
     }),
   );
   logger.log(`Application running on port ${process.env.PORT ?? 3001}`);
-  app.enableCors();
-  // app.enableCors({
-  //   origin: 'http://localhost:4200',
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: 'https://claudposerp.netlify.app/logIn',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   const config = new DocumentBuilder()
     .setTitle('ClaudPOSERP REST FULL API')
     .setDescription('Endpoints description to ClaudPOSERP')
