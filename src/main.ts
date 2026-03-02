@@ -20,7 +20,11 @@ async function bootstrap() {
   );
   logger.log(`Application running on port ${process.env.PORT ?? 3001}`);
   app.enableCors({
-    origin: 'https://clauderp.netlify.app',
+    origin: [
+      'http://localhost:4200',
+      'http://127.0.0.1:4200',
+      'https://clauderp.netlify.app',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

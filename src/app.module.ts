@@ -115,8 +115,3 @@ import { AppDataSource } from './data-source';
   providers: [AppService],
 })
 export class AppModule {}
-
-
-
-
-
