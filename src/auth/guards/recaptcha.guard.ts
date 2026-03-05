@@ -16,7 +16,7 @@ export class RecaptchaGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { body } = request;
     const tokenR = body.recaptchaToken;
-    const secret = process.env.RECAPTCHA_SECRET_KEY?.trim();
+    const secret = process.env.RECAPTCHA_SECRET_KEY_DEV?.trim();
 
     // 1. Validación básica de entrada
     if (!tokenR) {

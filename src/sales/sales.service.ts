@@ -36,6 +36,7 @@ export class SalesService {
   findAll(user: User) {
     const sales = this.saleRepository.find({
       where: { user: { id: user.id } },
+      relations: ['items', 'user'],
     });
     return sales;
   }
