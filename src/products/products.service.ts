@@ -80,10 +80,10 @@ export class ProductsService {
         `No se encontro el producto con el id: ${id}`,
       );
     }
-    console.log('file:', file);
+    // console.log('file:', file);
     let productImages: ProductImage[] = [];
     try {
-      console.log(file);
+      // console.log(file);
       if (file) {
         const uploadResult = await this.cloudinaryService.uploadFile(file);
         const urlImage = uploadResult.secure_url;
@@ -95,16 +95,16 @@ export class ProductsService {
         });
 
         productImages = [productImage];
-        console.log('productImages1', productImages);
+        // console.log('productImages1', productImages);
       }
-      console.log('productImages2', productImages);
+      // console.log('productImages2', productImages);
       const productToUpdate = await this.productsRepository.preload({
         id,
         ...(productDetails as any),
         user,
         images: productImages,
       });
-      console.log('productToUpdate back serice', productToUpdate?.images);
+      // console.log('productToUpdate back serice', productToUpdate?.images);
       if (!productToUpdate)
         throw new NotFoundException(`Product #${id} not found`);
       await this.productsRepository.save(productToUpdate);
@@ -138,7 +138,7 @@ export class ProductsService {
   }
   private handleDBErrors(error: any): never {
     if (error.code === '23505') {
-      console.log(error);
+      // console.log(error);
       throw new ConflictException('Product is already exist');
     }
 

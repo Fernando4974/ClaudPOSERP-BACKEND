@@ -150,4 +150,14 @@ export class AuthController {
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
   }
+  @Post('google-login')
+  @ApiOperation({ summary: 'Iniciar sesión con Google' })
+  @ApiResponse({ status: 200, description: 'Login exitoso con Google' })
+  @ApiResponse({
+    status: 401,
+    description: 'Token de Google inválido o usuario no registrado',
+  })
+  loginWithGoogle(@Body('token') token: string) {
+    return this.authService.loginWithGoogle(token);
+  }
 }
