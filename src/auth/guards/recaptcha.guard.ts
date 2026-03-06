@@ -16,7 +16,14 @@ export class RecaptchaGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { body } = request;
     const tokenR = body.recaptchaToken;
-    const secret = process.env.RECAPTCHA_SECRET_KEY_DEV?.trim();
+    const isProduction = process.env.NODE_ENV === 'production';
+    const primarySecret = isProduction
+      ? process.env.RECAPTCHA_SECRET_KEY
+      : process.env.RECAPTCHA_SECRET_KEY_DEV;
+    const fallbackSecret = isProduction
+      ? process.env.RECAPTCHA_SECRET_KEY_DEV
+      : process.env.RECAPTCHA_SECRET_KEY;
+    const secret = (primarySecret ?? fallbackSecret)?.trim();
 
     // 1. Validación básica de entrada
     if (!tokenR) {
@@ -24,7 +31,9 @@ export class RecaptchaGuard implements CanActivate {
     }
 
     if (!secret) {
-      console.error('ERROR: RECAPTCHA_SECRET_KEY no está definida en el .env');
+      console.error(
+        'ERROR: Missing reCAPTCHA secret. Set RECAPTCHA_SECRET_KEY (prod) or RECAPTCHA_SECRET_KEY_DEV (dev).',
+      );
       throw new ForbiddenException('Server configuration error');
     }
 
