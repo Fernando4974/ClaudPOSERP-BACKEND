@@ -20,6 +20,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginResponse } from './interfaces/login-response.interfaces';
 import { isUUID } from 'class-validator';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
@@ -251,5 +252,27 @@ export class AuthService {
     throw new InternalServerErrorException(
       'Database error occurred' + error.message,
     );
+  }
+  cliente = new OAuth2Client(process.env.ID_CLIENTE_GOOGLE);
+  async loginWithGoogle(token: string) {
+    const ticket = await this.cliente.verifyIdToken({
+      idToken: token,
+      audience: process.env.ID_CLIENTE_GOOGLE,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.name) {
+      throw new UnauthorizedException({ error: 'Invalid Google token' });
+    }
+    const { email } = payload;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      return {
+        message: `User ${user.name} logged in successfully`,
+        token: this.generateJwtToken({ id: user.id }),
+        userRoles: user.roles,
+      };
+    } else {
+      throw new UnauthorizedException({ error: 'User not found' });
+    }
   }
 }

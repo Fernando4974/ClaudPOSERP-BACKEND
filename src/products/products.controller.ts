@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -27,6 +28,7 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { validRoles } from 'src/auth/interfaces/valid-roles';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 
 @ApiTags('Products') // Agrupa en Swagger
 @Controller('products')
@@ -62,8 +64,8 @@ export class ProductsController {
   @Get('getAll')
   @ApiOperation({ summary: 'Listar todos los productos' })
   @ApiResponse({ status: 200, description: 'Retorna un arreglo de productos' })
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() paginationDto?: PaginationDto) {
+    return this.productsService.findAll(paginationDto);
   }
 
   @Get('number-key/:data')
