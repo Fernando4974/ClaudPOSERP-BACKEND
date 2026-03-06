@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
 import { Between, Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 
 @Injectable()
 export class SalesService {
@@ -33,10 +34,15 @@ export class SalesService {
     }
   }
 
-  findAll(user: User) {
+  findAll(user: User, paginationDto?: PaginationDto) {
+    const limit = paginationDto?.limit ?? 8;
+    const offset = paginationDto?.offset ?? 0;
+
     const sales = this.saleRepository.find({
       where: { user: { id: user.id } },
       relations: ['items', 'user'],
+      skip: offset,
+      take: limit,
     });
     return sales;
   }

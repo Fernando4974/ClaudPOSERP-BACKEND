@@ -12,6 +12,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductImage } from './entities/product-images.entity';
 import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -58,8 +59,12 @@ export class ProductsService {
     }
   }
 
-  async findAll() {
-    const products = await this.productsRepository.find({});
+  async findAll(paginationDto?: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto || {};
+    const products = await this.productsRepository.find({
+      take: limit,
+      skip: offset,
+    });
     return products;
   }
 
