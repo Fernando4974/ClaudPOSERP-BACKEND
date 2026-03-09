@@ -52,19 +52,25 @@ export class ProductsService {
       });
 
       await this.productsRepository.save(product);
-
+      this.paginatedProductCache.clear();
       return product;
     } catch (error) {
       this.handleDBErrors(error);
     }
   }
+  paginatedProductCache = new Map<string, Product[]>();
 
   async findAll(paginationDto?: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto || {};
+    const cacheKey = `${limit}-${offset}`;
+    if (this.paginatedProductCache.has(cacheKey)) {
+      return this.paginatedProductCache.get(cacheKey)!;
+    }
     const products = await this.productsRepository.find({
       take: limit,
       skip: offset,
     });
+    this.paginatedProductCache.set(cacheKey, products);
     return products;
   }
 
