@@ -8,11 +8,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductImage } from './entities/product-images.entity';
-import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
-import { PaginationDto } from 'src/common/pagination/pagination.dto';
+import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 
 @Injectable()
 export class ProductsService {

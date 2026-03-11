@@ -15,6 +15,7 @@ import { SeedModule } from './seed/seed.module';
 
 // Asegúrate de que esta ruta apunte a donde creaste el archivo data-source.ts
 import { AppDataSource } from './data-source';
+import { OtherModule } from './other/other.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { AppDataSource } from './data-source';
     ProductsModule,
     SalesModule,
     SeedModule,
+    OtherModule,
   ],
   controllers: [AppController],
   providers: [AppService],
