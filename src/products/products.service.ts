@@ -131,11 +131,10 @@ export class ProductsService {
   async remove(id: string) {
     const productToDelete = await this.productsRepository.findOneBy({ id });
 
-    if (productToDelete) {
-      await this.productsRepository.remove(productToDelete);
-    } else {
+    if (!productToDelete) {
       throw new NotFoundException();
     }
+    await this.productsRepository.remove(productToDelete);
   }
   async findNumberKey(numberKey: number) {
     const valideNumberKey = await this.productsRepository.findOneBy({

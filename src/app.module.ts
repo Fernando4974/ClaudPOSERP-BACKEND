@@ -3,10 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HttpModule } from '@nestjs/axios';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { ProductsModule } from './products/products.module';
@@ -16,6 +14,7 @@ import { SeedModule } from './seed/seed.module';
 // Asegúrate de que esta ruta apunte a donde creaste el archivo data-source.ts
 import { AppDataSource } from './data-source';
 import { OtherModule } from './other/other.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -58,8 +57,10 @@ import { OtherModule } from './other/other.module';
     SalesModule,
     SeedModule,
     OtherModule,
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

@@ -10,7 +10,7 @@ export class CloudinaryService {
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     console.log(
       'Intentando subir con Cloud Name:',
-      cloudinary.config().c loud_name,
+      cloudinary.config().cloud_name,
     );
     return new Promise((resolve, reject) => {
       const upload = cloudinary.uploader.upload_stream((error, result) => {
