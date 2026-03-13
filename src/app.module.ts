@@ -6,6 +6,8 @@ import { HttpModule } from '@nestjs/axios';
 import { join, resolve } from 'path';
 
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { CommonModule } from './common/common.module';
 import { ProductsModule } from './products/products.module';
 import { SalesModule } from './sales/sales.module';
@@ -13,9 +15,7 @@ import { SeedModule } from './seed/seed.module';
 
 // Asegúrate de que esta ruta apunte a donde creaste el archivo data-source.ts
 import { AppDataSource } from './data-source';
-import { OtherModule } from './other/other.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-
 @Module({
   imports: [
     // 1. Variables de entorno
@@ -56,11 +56,19 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ProductsModule,
     SalesModule,
     SeedModule,
-    OtherModule,
 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    // Configuración global de Throttler (rate limiting)
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000, // IMPORTANTE: En versiones nuevas son MILISEGUNDOS (60000 = 1 min)
+        limit: 100,
+      },
+    ]),
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
