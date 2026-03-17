@@ -4,8 +4,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { CreateSaleItemDto } from './dto/create-sale-item.dto';
-import { User } from 'src/auth/entities/user.entity';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+import { User } from '../auth/entities/user.entity';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 
 describe('SalesService', () => {
   let service: SalesService;
@@ -15,6 +17,9 @@ describe('SalesService', () => {
     mockSalesRespository = {
       create: jest.fn(),
       save: jest.fn(),
+      find: jest.fn(),
+      findOne: jest.fn(),
+      remove: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -24,6 +29,7 @@ describe('SalesService', () => {
           useValue: mockSalesRespository,
         },
       ],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
     }).compile();
 
     service = module.get<SalesService>(SalesService);
@@ -74,5 +80,52 @@ describe('SalesService', () => {
       user,
     });
     expect(sale).toEqual(saleCreated);
+  });
+
+  it('findAll should return cached results on subsequent calls', async () => {
+    const user = { id: 'u1' } as User;
+    const spy = jest
+      .spyOn(mockSalesRespository, 'find')
+      .mockResolvedValueOnce([{ id: 's1' } as any]);
+
+    const first = await service.findAll(user, { limit: 1, offset: 0 });
+    const second = await service.findAll(user, { limit: 1, offset: 0 });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(first).toEqual(second);
+  });
+
+  it('findOne should throw BadRequestException when id is "create"', async () => {
+    await expect(service.findOne('create')).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+  });
+
+  it('findOne should throw NotFoundException when sale not exists', async () => {
+    jest.spyOn(mockSalesRespository, 'findOne').mockResolvedValueOnce(null);
+    await expect(service.findOne('non-exist-id')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
+  });
+
+  it('remove should delete an existing sale and return message', async () => {
+    const saleToDelete = { id: '10' } as any;
+    jest
+      .spyOn(mockSalesRespository, 'findOne')
+      .mockResolvedValueOnce(saleToDelete);
+    jest.spyOn(mockSalesRespository, 'remove').mockResolvedValueOnce(undefined);
+
+    const res = await service.remove('10');
+    expect(res).toEqual({
+      message: `Sale #10 has been deleted successfully`,
+      deletedId: '10',
+    });
+  });
+
+  it('salesDay should return array of sales for today', async () => {
+    const user = { id: 'u1' } as User;
+    const todaySales = [{ id: 's1' } as any];
+    jest.spyOn(mockSalesRespository, 'find').mockResolvedValueOnce(todaySales);
+    const res = await service.salesDay(user);
+    expect(res).toEqual(todaySales);
   });
 });

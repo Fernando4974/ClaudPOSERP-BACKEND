@@ -77,12 +77,10 @@ describe('CreateProductDto', () => {
     const input = { title: 'aa', price: 2, description: 111 };
     const dto = plainToClass(CreateProductDto, input);
     const errors = await validate(dto);
-    console.log(errors);
     const props = errors.find((e) => e.property === 'description');
     expect(props).toBeDefined();
     expect(props?.constraints?.isString).toBeDefined();
     const otherErrors = errors.filter((e) => e.property !== 'description');
-    console.log(otherErrors);
     expect(otherErrors.length).toBe(0);
   });
   it('Shoul not validate if barcode is not string', async () => {

@@ -27,7 +27,9 @@ export const SEED_DATA: SeedProduct[] = [
     barcode: '7509876543210',
     posAvalible: true,
     tags: ['celular', 'tech', 'android'],
-    images: ['phone_v1.png'],
+    images: [
+      'https://res.cloudinary.com/dmekopag1/image/upload/v1773769561/lhw4i3rq6ujfvt6tnfut.avif',
+    ],
     numberKey: 1,
     user: userIds[0],
   },
@@ -40,7 +42,9 @@ export const SEED_DATA: SeedProduct[] = [
     barcode: '7501112223334',
     posAvalible: true,
     tags: ['laptop', 'computacion', 'apple'],
-    images: ['laptop_m3.jpg'],
+    images: [
+      'https://res.cloudinary.com/dmekopag1/image/upload/v1773770070/yhokqlrewpkgwsvg3k2i.webp',
+    ],
     numberKey: 2,
     user: userIds[1],
   },
@@ -53,7 +57,9 @@ export const SEED_DATA: SeedProduct[] = [
     barcode: '7504445556667',
     posAvalible: true,
     tags: ['audio', 'bluetooth', 'musica'],
-    images: ['headphones.jpg'],
+    images: [
+      'https://res.cloudinary.com/dmekopag1/image/upload/v1773769941/q5deztb6tlrbutsxitbi.webp',
+    ],
     numberKey: 3,
     user: userIds[0],
   },
@@ -66,7 +72,9 @@ export const SEED_DATA: SeedProduct[] = [
     barcode: '7507778889990',
     posAvalible: true,
     tags: ['monitor', 'periferico', '4k'],
-    images: ['monitor27.jpg'],
+    images: [
+      'https://res.cloudinary.com/dmekopag1/image/upload/v1773769870/cmpy5poyrrhdy42fg8bi.webp',
+    ],
     numberKey: 4,
     user: userIds[1],
   },
@@ -79,7 +87,9 @@ export const SEED_DATA: SeedProduct[] = [
     barcode: '7501212121212',
     posAvalible: true,
     tags: ['gaming', 'teclado', 'setup'],
-    images: ['keyboard_rgb.png'],
+    images: [
+      'https://res.cloudinary.com/dmekopag1/image/upload/v1773769781/o8dw57fexuvtf6acrcmh.jpg',
+    ],
     numberKey: 5,
     user: userIds[0],
   },
@@ -116,7 +126,7 @@ for (let i = 6; i <= 50; i++) {
     barcode: `750${100000 + i}`,
     posAvalible: true,
     tags: ['stock', 'venta'],
-    images: [`prod_img_${i}.jpg`],
+    images: [`/cloud.png`],
     numberKey: i,
     user: userIds[i % 2],
   });

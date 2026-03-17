@@ -18,7 +18,6 @@ describe('Create-sale-item.ts', () => {
     const input = {};
     const dto = plainToClass(CreateSaleItemDto, input);
     const error = await validate(dto);
-    console.log(error);
     expect(error.length).toBeGreaterThan(0);
     const props = error.map((e) => e.property);
     expect(props.includes('productId'));

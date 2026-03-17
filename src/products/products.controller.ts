@@ -23,13 +23,12 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { User } from 'src/auth/entities/user.entity';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { validRoles } from 'src/auth/interfaces/valid-roles';
+import { User } from '../auth/entities/user.entity';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { validRoles } from '../auth/interfaces/valid-roles';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PaginationDto } from 'src/common/pagination/pagination.dto';
-
+import { PaginationDto } from '../common/pagination/pagination.dto';
 @ApiTags('Products') // Agrupa en Swagger
 @Controller('products')
 export class ProductsController {
@@ -62,10 +61,11 @@ export class ProductsController {
   }
 
   @Get('getAll')
+  @Auth(validRoles.user, validRoles.superUser, validRoles.admin)
   @ApiOperation({ summary: 'Listar todos los productos' })
   @ApiResponse({ status: 200, description: 'Retorna un arreglo de productos' })
-  findAll(@Query() paginationDto?: PaginationDto) {
-    return this.productsService.findAll(paginationDto);
+  findAll(@GetUser() user: User, @Query() paginationDto?: PaginationDto) {
+    return this.productsService.findAll(user, paginationDto);
   }
 
   @Get('number-key/:data')

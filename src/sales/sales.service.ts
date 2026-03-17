@@ -11,8 +11,8 @@ import { UpdateSaleDto } from './dto/update-sale.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
 import { Between, Repository } from 'typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { PaginationDto } from 'src/common/pagination/pagination.dto';
+import { User } from '../auth/entities/user.entity';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 
 @Injectable()
 export class SalesService {

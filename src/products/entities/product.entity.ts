@@ -37,8 +37,8 @@ export class Product {
   @Column({ type: 'text', nullable: true })
   categorie: string;
   @ApiProperty({ example: '5449000000996 ' })
-  @Column({ type: 'text', nullable: true })
-  barcode: string;
+  @Column({ type: 'text', nullable: true, default: '0' })
+  barcode?: string;
   @ApiProperty({
     description: 'El producto esta disponible el el punto de venta',
   })

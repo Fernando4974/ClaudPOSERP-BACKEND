@@ -8,11 +8,9 @@ import {
   IsString,
   Max,
   MaxLength,
-  Min,
   MinLength,
   ValidateIf,
 } from 'class-validator';
-
 export class CreateProductDto {
   @ApiProperty({
     description: 'Título o nombre del producto',
@@ -91,8 +89,7 @@ export class CreateProductDto {
   @IsOptional()
   @ValidateIf((object, value) => value !== '' && value !== null)
   @IsNumber()
-  @Min(1)
-  @Max(25)
+  @Max(50)
   numberKey?: number;
 
   @ApiProperty({

@@ -60,16 +60,23 @@ export class ProductsService {
   }
   paginatedProductCache = new Map<string, Product[]>();
 
-  async findAll(paginationDto?: PaginationDto) {
+  async findAll(user: User, paginationDto?: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto || {};
-    const cacheKey = `${limit}-${offset}`;
+    const idUser = user.id;
+    const cacheKey = `${limit}-${offset}-${idUser}`;
     if (this.paginatedProductCache.has(cacheKey)) {
       return this.paginatedProductCache.get(cacheKey)!;
     }
     const products = await this.productsRepository.find({
+      where: {
+        user: {
+          id: idUser,
+        },
+      },
       take: limit,
       skip: offset,
     });
+    //console.log(products);
     this.paginatedProductCache.set(cacheKey, products);
     return products;
   }
@@ -119,6 +126,7 @@ export class ProductsService {
       if (!productToUpdate)
         throw new NotFoundException(`Product #${id} not found`);
       await this.productsRepository.save(productToUpdate);
+      this.paginatedProductCache.clear();
       return {
         message: 'Producto actualizado con éxito',
         product: productToUpdate,
@@ -135,6 +143,7 @@ export class ProductsService {
       throw new NotFoundException();
     }
     await this.productsRepository.remove(productToDelete);
+    this.paginatedProductCache.clear();
   }
   async findNumberKey(numberKey: number) {
     const valideNumberKey = await this.productsRepository.findOneBy({
@@ -148,7 +157,7 @@ export class ProductsService {
   }
   private handleDBErrors(error: any): never {
     if (error.code === '23505') {
-      // console.log(error);
+      //console.log(error);
       throw new ConflictException('Product is already exist');
     }
 

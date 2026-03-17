@@ -14,10 +14,12 @@ export class CloudinaryService {
     );
     return new Promise((resolve, reject) => {
       const upload = cloudinary.uploader.upload_stream((error, result) => {
-        if (error)
+        if (error) {
+          console.log(error);
           return reject(
             new Error(error.message || 'Clodudinary upload failed'),
           );
+        }
         if (!result) return reject(new Error('Cloudinary result is undefined'));
         resolve(result);
       });

@@ -21,7 +21,6 @@ describe('CreateSaleDto', () => {
     };
     const dto = plainToClass(CreateSaleDto, input);
     const error = await validate(dto);
-    console.log(error);
     expect(error.length).toBe(0);
   });
   it('Should validated only whit required params', async () => {

@@ -11,10 +11,10 @@ import {
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { validRoles } from 'src/auth/interfaces/valid-roles';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/auth/entities/user.entity';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { validRoles } from '../auth/interfaces/valid-roles';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../auth/entities/user.entity';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
@@ -23,7 +23,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Sale } from './entities/sale.entity';
-import { PaginationDto } from 'src/common/pagination/pagination.dto';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 
 @Controller('sales')
 export class SalesController {
