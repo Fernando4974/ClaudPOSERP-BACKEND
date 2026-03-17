@@ -9,12 +9,10 @@
     <p align="center">
 
 ## API DOCUMENTATION
+
 http://localhost:3001/api#/
 
-
 ## docker-compose
-
-
 
 ```
 services:
@@ -30,9 +28,8 @@ services:
     container_name: postgres_claudposerp
     volumes:
       - ./postgres:/var/lib/postgresql/data
- 
- ```
 
+```
 
 ## Project setup
 
@@ -65,6 +62,7 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
 # neon connection
 
 npx neonctl@latest init

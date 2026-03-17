@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -22,6 +23,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Sale } from './entities/sale.entity';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 
 @Controller('sales')
 export class SalesController {
@@ -69,8 +71,8 @@ export class SalesController {
     summary: 'Obtener Ventas',
     description: 'Obtener todas las ventas asociadas al usuario',
   })
-  findAll(@GetUser() user: User) {
-    return this.salesService.findAll(user);
+  findAll(@GetUser() user: User, @Query() paginationDto?: PaginationDto) {
+    return this.salesService.findAll(user, paginationDto);
   }
   // OBTENER VENTAS DEL DIA ------------------------------------------------->>>
   @Auth(validRoles.admin, validRoles.user, validRoles.superUser)

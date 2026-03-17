@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from './entities/sale.entity';
 import { Between, Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
+import { PaginationDto } from 'src/common/pagination/pagination.dto';
 
 @Injectable()
 export class SalesService {
@@ -33,10 +34,24 @@ export class SalesService {
     }
   }
 
-  findAll(user: User) {
-    const sales = this.saleRepository.find({
+  salesPaginatadeCache = new Map<string, Sale[]>();
+
+  async findAll(user: User, paginationDto?: PaginationDto) {
+    const limit = paginationDto?.limit ?? 8;
+    const offset = paginationDto?.offset ?? 0;
+
+    const caheKey = `${limit}-${offset}`;
+    if (this.salesPaginatadeCache.has(caheKey)) {
+      return this.salesPaginatadeCache.get(caheKey);
+    }
+
+    const sales = await this.saleRepository.find({
       where: { user: { id: user.id } },
+      relations: ['items', 'user'],
+      skip: offset,
+      take: limit,
     });
+    this.salesPaginatadeCache.set(caheKey, sales);
     return sales;
   }
   async findOne(id: string) {
@@ -150,18 +165,21 @@ export class SalesService {
       `Unexpected database error: ${error.message || 'Check logs'}`,
     );
   }
+
   async salesDay(user: User) {
     try {
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 999);
+
       const salesToday: Sale[] = await this.saleRepository.find({
         where: {
           createdAt: Between(startOfDay, endOfDay),
           user: user,
         },
       });
+
       return salesToday;
     } catch (error) {
       this.handleDBErrors(error);

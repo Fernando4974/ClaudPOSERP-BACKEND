@@ -27,6 +27,7 @@ import { HttpModule } from '@nestjs/axios';
         },
       }),
     }),
+    // Rate limiting ahora se configura globalmente en AppModule
   ],
   exports: [TypeOrmModule, JwtModule, JwtStrategy, PassportModule, AuthService],
 })

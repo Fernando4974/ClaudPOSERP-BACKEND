@@ -1,0 +1,33 @@
+html,
+body {
+  margin: 0px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.img {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+img{
+    width: 50%;
+}
+
+.title {
+  color: black;
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+h1 {
+  text-align: center;
+  width: 100%;
+}
