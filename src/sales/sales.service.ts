@@ -27,7 +27,7 @@ export class SalesService {
         ...createSaleDto,
         user: user,
       });
-
+      this.salesPaginatadeCache.clear();
       return await this.saleRepository.save(sale);
     } catch (error) {
       return this.handleDBErrors(error);
@@ -48,6 +48,9 @@ export class SalesService {
     const sales = await this.saleRepository.find({
       where: { user: { id: user.id } },
       relations: ['items', 'user'],
+      order: {
+        createdAt: 'DESC',
+      },
       skip: offset,
       take: limit,
     });
@@ -95,6 +98,7 @@ export class SalesService {
     try {
       // 3. Intentamos borrar
       await this.saleRepository.remove(saleTodelete);
+      this.salesPaginatadeCache.clear();
       return {
         message: `Sale #${id} has been deleted successfully`,
         deletedId: id,

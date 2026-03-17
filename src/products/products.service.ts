@@ -116,12 +116,19 @@ export class ProductsService {
         // console.log('productImages1', productImages);
       }
       // console.log('productImages2', productImages);
-      const productToUpdate = await this.productsRepository.preload({
+      // Solo añadimos la propiedad `images` si hay imágenes nuevas (evita borrar las existentes cuando no se sube archivo)
+      const preloadData: any = {
         id,
         ...(productDetails as any),
         user,
-        images: productImages,
-      });
+      };
+
+      if (productImages && productImages.length > 0) {
+        preloadData.images = productImages;
+      }
+
+      const productToUpdate =
+        await this.productsRepository.preload(preloadData);
       // console.log('productToUpdate back serice', productToUpdate?.images);
       if (!productToUpdate)
         throw new NotFoundException(`Product #${id} not found`);
