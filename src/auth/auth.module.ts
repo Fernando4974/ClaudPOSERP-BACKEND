@@ -7,12 +7,14 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
   imports: [
     ConfigModule,
+    HttpModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
@@ -25,6 +27,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         },
       }),
     }),
+    // Rate limiting ahora se configura globalmente en AppModule
   ],
   exports: [TypeOrmModule, JwtModule, JwtStrategy, PassportModule, AuthService],
 })

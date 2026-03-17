@@ -8,8 +8,11 @@
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 
-## docker-compose
+## API DOCUMENTATION
 
+http://localhost:3001/api#/
+
+## docker-compose
 
 ```
 services:
@@ -25,9 +28,8 @@ services:
     container_name: postgres_claudposerp
     volumes:
       - ./postgres:/var/lib/postgresql/data
- 
- ```
 
+```
 
 ## Project setup
 
@@ -60,6 +62,7 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
 # neon connection
 
 npx neonctl@latest init
