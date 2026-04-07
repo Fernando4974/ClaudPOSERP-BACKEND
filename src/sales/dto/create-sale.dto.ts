@@ -10,12 +10,15 @@ import { CreateSaleItemDto } from './create-sale-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateSaleDto {
+  //Total
   @ApiProperty({ example: 201, description: 'Is Autoincrement' })
   @IsNumber()
   total: number;
+  //Iva
   @ApiProperty({ example: 12.0, nullable: true })
   @IsNumber()
   iva: number;
+  //status
   @ApiProperty({
     example: 'EFECTIVO',
     description: 'Definido por los botones CH, CHK, CA/AMT',
@@ -24,6 +27,7 @@ export class CreateSaleDto {
   @IsString()
   @IsOptional()
   status?: string;
+  //Items
   @ApiProperty({
     example: [
       {

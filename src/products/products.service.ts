@@ -8,11 +8,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductImage } from './entities/product-images.entity';
-import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
-import { PaginationDto } from 'src/common/pagination/pagination.dto';
+import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
+import { PaginationDto } from '../common/pagination/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -52,19 +52,25 @@ export class ProductsService {
       });
 
       await this.productsRepository.save(product);
-
+      this.paginatedProductCache.clear();
       return product;
     } catch (error) {
       this.handleDBErrors(error);
     }
   }
+  paginatedProductCache = new Map<string, Product[]>();
 
   async findAll(paginationDto?: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto || {};
+    const cacheKey = `${limit}-${offset}`;
+    if (this.paginatedProductCache.has(cacheKey)) {
+      return this.paginatedProductCache.get(cacheKey)!;
+    }
     const products = await this.productsRepository.find({
       take: limit,
       skip: offset,
     });
+    this.paginatedProductCache.set(cacheKey, products);
     return products;
   }
 
@@ -125,11 +131,10 @@ export class ProductsService {
   async remove(id: string) {
     const productToDelete = await this.productsRepository.findOneBy({ id });
 
-    if (productToDelete) {
-      await this.productsRepository.remove(productToDelete);
-    } else {
+    if (!productToDelete) {
       throw new NotFoundException();
     }
+    await this.productsRepository.remove(productToDelete);
   }
   async findNumberKey(numberKey: number) {
     const valideNumberKey = await this.productsRepository.findOneBy({

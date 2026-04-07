@@ -109,7 +109,7 @@ export class AuthController {
 
   @Patch('update-user')
   @Auth(validRoles.admin, validRoles.superUser)
-  @ApiBearerAuth() // 👈 Muestra el candado en Swagger
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualizar perfil de usuario autenticado' })
   @ApiResponse({
     status: 200,
