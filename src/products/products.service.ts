@@ -69,6 +69,9 @@ export class ProductsService {
     const products = await this.productsRepository.find({
       take: limit,
       skip: offset,
+      order: {
+        title: 'ASC',
+      },
     });
     this.paginatedProductCache.set(cacheKey, products);
     return products;
@@ -94,6 +97,7 @@ export class ProductsService {
     // console.log('file:', file);
     let productImages: ProductImage[] = [];
     try {
+      this.paginatedProductCache.clear();
       // console.log(file);
       if (file) {
         const uploadResult = await this.cloudinaryService.uploadFile(file);
@@ -126,6 +130,7 @@ export class ProductsService {
     } catch (error) {
       this.handleDBErrors(error);
     }
+    this.paginatedProductCache.clear();
   }
 
   async remove(id: string) {

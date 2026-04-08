@@ -23,7 +23,7 @@ export class UserRoleGuard implements CanActivate {
     );
 
     if (!valideRoles || valideRoles.length === 0) {
-      console.log('Warning: Roles is undefined by Guards');
+      //console.log('Warning: Roles is undefined by Guards');
       return true;
     }
 

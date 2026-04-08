@@ -46,8 +46,13 @@ export class SalesService {
     }
 
     const sales = await this.saleRepository.find({
-      where: { user: { id: user.id } },
+      where: {
+        user: { id: user.id },
+      },
       relations: ['items', 'user'],
+      order: {
+        id: 'DESC',
+      },
       skip: offset,
       take: limit,
     });
@@ -88,6 +93,7 @@ export class SalesService {
   }
 
   async remove(id: string) {
+    this.salesPaginatadeCache.clear();
     const saleTodelete = await this.saleRepository.findOne({ where: { id } });
     if (!saleTodelete) {
       return this.handleDBErrors('Sale not found');

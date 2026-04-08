@@ -44,8 +44,8 @@ export class SeedService {
     try {
       // Borra todos los productos (las imágenes se borran por Cascada si está configurado)
       await queryBuilder.delete().where({}).execute();
-    } catch (error) {
-      console.log('Error al limpiar:', error.message);
+    } catch {
+      //console.log('Error al limpiar:', error.message);
     }
   }
 }
