@@ -25,22 +25,22 @@ export class MessagesWsGateway
   async handleConnection(client: Socket) {
     let payload: JwtPayload;
     const token = client.handshake.headers.authentication as string;
-    console.log({ token });
+    //console.log({ token });
     try {
       payload = await this.jwtService.verify(token);
       await this.messagesWsService.registerClient(client, payload.id);
       this.messagesWsService.getConnectedClients();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      //console.log(error);
       client.disconnect();
       return;
     }
     this.messagesWsService.getClientsConnectedCount();
-    console.log(
-      'Clientes conectados',
-      this.messagesWsService.getClientsConnectedCount(),
-      // this.messagesWsService.getAllMessages(),
-    );
+    //console.log(
+    //  'Clientes conectados',
+    //  this.messagesWsService.getClientsConnectedCount(),
+    // this.messagesWsService.getAllMessages(),
+    // );
     this.wss.emit(
       'clients-updated',
       this.messagesWsService.getConnectedClients(),
@@ -59,7 +59,7 @@ export class MessagesWsGateway
   }
   @SubscribeMessage('message-from-client')
   handleMessageFromClient(client: Socket, payload: NewMessageDto) {
-    console.log(client.id, payload);
+    //console.log(client.id, payload);
     const userName = this.messagesWsService.getUserFllName(client.id);
 
     //emite solo al cliente que envia el mensaje
