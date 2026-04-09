@@ -12,24 +12,6 @@
 
 http://localhost:3001/api#/
 
-## docker-compose
-
-```
-services:
-  db:
-    image: postgres:14.3
-    restart: always
-    ports:
-      - "6432:5432"
-    environment:
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: claud_db_erp
-      PGDATA: /var/lib/postgresql/data/pgdata
-    container_name: postgres_claudposerp
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-
-```
 
 ## Project setup
 
