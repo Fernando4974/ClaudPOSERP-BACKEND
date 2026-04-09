@@ -56,9 +56,9 @@ export class RecaptchaGuard implements CanActivate {
         ),
       );
 
-      console.log('--- Respuesta de Google ---');
-      console.log(data); // Aquí verás si Google dice success: true
-      console.log('---------------------------');
+     // console.log('--- Respuesta de Google ---');
+     // console.log(data); // Aquí verás si Google dice success: true
+     // console.log('---------------------------');
 
       // 4. Validar el resultado de Google
       if (!data.success) {

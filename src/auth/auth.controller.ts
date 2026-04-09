@@ -281,7 +281,7 @@ export class AuthController {
   // 6. GESTIÓN DE PERFIL (PROTEGIDO)
   // ==========================================
   @Patch('update-user')
-  @Auth(validRoles.admin, validRoles.superUser) // Solo Admins o SuperUsers
+  @Auth(validRoles.admin, validRoles.superUser)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualizar perfil de usuario autenticado' })
   update(@GetUser() user: User, @Body() updateAuthDto: UpdateUserDto) {

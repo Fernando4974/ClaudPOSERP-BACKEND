@@ -21,6 +21,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LoginResponse } from './interfaces/login-response.interfaces';
 import { isUUID } from 'class-validator';
 import { OAuth2Client } from 'google-auth-library';
+import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -79,6 +80,7 @@ export class AuthService {
     return {
       message: `User ${user.name} logged in successfully`,
       token: this.generateJwtToken({ id: user.id }),
+      user_name: user.name,
       userRoles: user.roles,
     };
   }
@@ -103,7 +105,7 @@ export class AuthService {
   // Send recovery email
   @HttpCode(201)
   async sendRecoveryEmail(forgotPasswordDto: ForgotPasswordDto) {
-    console.log('sendEmailFunctionON');
+    // console.log('sendEmailFunctionON');
     const user = await this.userRepository.findOne({
       where: { email: forgotPasswordDto.email },
     });
@@ -113,7 +115,7 @@ export class AuthService {
     const token = this.generateJwtToken({ id: user.id });
     const recoveryUrl =
       process.env.UrlForResetPassword + token + '&email=' + user.email;
-    console.log(recoveryUrl);
+    //console.log(recoveryUrl);
     try {
       await this.mailerService.sendMail({
         to: user.email,
@@ -138,8 +140,8 @@ export class AuthService {
 
     try {
       payload = this.jwtService.verify<JwtPayload>(token);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      //console.log(error);
       throw new UnauthorizedException({ error: 'Invalid or expired token' });
     }
     const user = await this.userRepository.findOne({
@@ -159,7 +161,7 @@ export class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     try {
       await this.userRepository.save(user);
-      console.log(user.password);
+      //console.log(user.password);
       return { message: 'Password reset successfully' };
     } catch (error) {
       throw new InternalServerErrorException({
@@ -211,7 +213,7 @@ export class AuthService {
     }
 
     if (!user) throw new NotFoundException(`Usuario no encontrado`);
-    console.log(user);
+    //console.log(user);
     return user;
   }
 
@@ -270,6 +272,7 @@ export class AuthService {
         message: `User ${user.name} logged in successfully`,
         token: this.generateJwtToken({ id: user.id }),
         userRoles: user.roles,
+        user_name: user.name,
       };
     } else {
       throw new UnauthorizedException({ error: 'User not found' });
